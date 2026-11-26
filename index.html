@@ -21,6 +21,8 @@
     --acc-dim: rgba(255, 179, 0, .16);
     --acc-line: rgba(255, 179, 0, .55);
     --glow: rgba(255, 179, 0, .22);
+    --grid-line: rgba(237, 231, 218, .28);
+    --grid-step: 154px;
     --pad: clamp(20px, 3.6vw, 56px);
     --gutter: clamp(12px, 1.6vw, 24px);
     --sans: "Helvetica Neue", Helvetica, Arial, "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -37,6 +39,7 @@
     --acc-dim: rgba(181, 64, 26, .10);
     --acc-line: rgba(181, 64, 26, .55);
     --glow: rgba(181, 64, 26, .14);
+    --grid-line: rgba(11, 11, 13, .30);
   }
 
   * { box-sizing: border-box; }
@@ -78,10 +81,10 @@
   .crt {
     position: fixed; inset: 0; z-index: 200; pointer-events: none;
     background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .26) 0 1px, transparent 1px 3px);
-    opacity: .55; transition: opacity .35s ease;
+    opacity: .4; transition: opacity .35s ease;
   }
   html[data-mode="day"] .crt {
-    opacity: .2;
+    opacity: .14;
     background: repeating-linear-gradient(to bottom, rgba(11, 11, 13, .14) 0 1px, transparent 1px 3px);
   }
   body.crt-off .crt { opacity: 0; }
@@ -94,6 +97,9 @@
   .grid-overlay .inner {
     height: 100%; max-width: 1600px; margin: 0 auto; padding-inline: var(--pad);
     display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gutter);
+  }
+  .grid-overlay .inner {
+    background-image: repeating-linear-gradient(to bottom, var(--acc-line) 0 1px, transparent 1px var(--grid-step));
   }
   .grid-overlay .inner i { background: var(--acc-dim); border-left: 1px solid var(--acc-line); }
 
@@ -130,6 +136,13 @@
   }
   .page-2 { overflow-y: auto; }
 
+  /* 横向基线网格：少、粗、看得见 */
+  .baseline {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background-image: repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px var(--grid-step));
+  }
+  .page > .top, .page > .main, .page > .ruler { position: relative; z-index: 1; }
+
   /* 第二页：反白纸面（不论昼夜都是纸） */
   .page-2 {
     --bg: #EDE7DA;
@@ -142,14 +155,18 @@
     --acc-dim: rgba(181, 64, 26, .10);
     --acc-line: rgba(181, 64, 26, .55);
     --glow: rgba(181, 64, 26, .14);
+    --grid-line: rgba(11, 11, 13, .30);
     background: var(--bg);
   }
   body[data-page="2"] .crt {
-    opacity: .2;
+    opacity: .14;
     background: repeating-linear-gradient(to bottom, rgba(11, 11, 13, .14) 0 1px, transparent 1px 3px);
   }
   body[data-page="2"] .vignette {
     background: radial-gradient(118% 92% at 46% 40%, transparent 52%, rgba(70, 50, 30, .16) 100%);
+  }
+  body[data-page="2"] .grid-overlay .inner {
+    background-image: repeating-linear-gradient(to bottom, rgba(181, 64, 26, .35) 0 1px, transparent 1px var(--grid-step));
   }
   body[data-page="2"] .grid-overlay .inner i {
     background: rgba(181, 64, 26, .10);
@@ -641,6 +658,7 @@
 <div class="deck" id="deck">
 
 <section class="page page-1">
+<div class="baseline" aria-hidden="true"></div>
 <header class="top">
   <div class="top-inner">
     <svg class="mark" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
@@ -733,6 +751,7 @@
 </section>
 
 <section class="page page-2">
+<div class="baseline" aria-hidden="true"></div>
   <header class="top">
     <div class="top-inner">
       <svg class="mark" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
