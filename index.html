@@ -103,8 +103,12 @@
   html[data-mode="day"] .clock { color: var(--ink); text-shadow: 0 1px 0 rgba(255,255,255,.4); }
   html[data-mode="day"] .clock small { color: var(--cyan); background: rgba(255, 248, 238, .6); }
 
-  form {
+  .search-wrap {
+    position: relative;
     width: min(760px, 88vw);
+  }
+  form {
+    width: 100%;
     display: flex;
     border-radius: 14px;
     overflow: hidden;
@@ -116,6 +120,89 @@
       0 18px 60px rgba(0, 0, 0, .55);
     backdrop-filter: blur(8px) saturate(125%);
   }
+
+  /* ---------- suggestion panel ---------- */
+  .suggest {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0; right: 0;
+    z-index: 20;
+    max-height: 46vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    background: rgba(10, 6, 26, .94);
+    border: 1px solid var(--line);
+    box-shadow: 0 18px 60px rgba(0, 0, 0, .6), 0 0 24px var(--glow-cyan);
+    backdrop-filter: blur(12px) saturate(130%);
+  }
+  html[data-mode="day"] .suggest {
+    background: rgba(255, 247, 238, .96);
+    box-shadow: 0 18px 60px rgba(120, 80, 50, .25), 0 0 24px var(--glow-cyan);
+  }
+  .suggest[hidden] { display: none; }
+  .suggest .sec {
+    padding: 9px 14px 5px;
+    font: 11px/1.4 Consolas, "Cascadia Mono", ui-monospace, monospace;
+    letter-spacing: .22em;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+  .suggest .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .suggest .row .ico {
+    width: 16px;
+    flex: none;
+    text-align: center;
+    opacity: .5;
+    font-size: 12px;
+  }
+  .suggest .row .txt {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .suggest .row .txt b { color: var(--cyan); font-weight: 600; }
+  .suggest .row .n {
+    font-size: 11px;
+    color: var(--dim);
+    flex: none;
+  }
+  .suggest .row .del {
+    flex: none;
+    opacity: 0;
+    font-size: 11px;
+    color: var(--dim);
+    padding: 0 2px;
+  }
+  .suggest .row:hover .del { opacity: .7; }
+  .suggest .row .del:hover { color: var(--magenta); }
+  .suggest .row:hover,
+  .suggest .row.active { background: rgba(124, 246, 255, .10); }
+  html[data-mode="day"] .suggest .row:hover,
+  html[data-mode="day"] .suggest .row.active { background: rgba(42, 127, 140, .12); }
+  .suggest .foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 14px;
+    border-top: 1px solid rgba(124, 246, 255, .12);
+    font-size: 11px;
+    color: var(--dim);
+  }
+  .suggest .foot button {
+    background: none; border: 0; cursor: pointer;
+    color: var(--dim); font-size: 11px; padding: 0;
+  }
+  .suggest .foot button:hover { color: var(--magenta); }
   input[type="search"] {
     flex: 1;
     min-width: 0;
@@ -229,10 +316,16 @@
   <main class="stage">
     <div class="clock" id="clock" title="点击切换秒显示">--:--<small id="date"></small></div>
 
-    <form id="search" action="https://www.bing.com/search" method="get">
-      <input type="search" id="q" name="q" autocomplete="off" spellcheck="false" placeholder="搜索网页（/ 聚焦，Ctrl+Enter 新标签页）">
-      <button class="go" type="submit" aria-label="搜索">⌕</button>
-    </form>
+    <div class="search-wrap">
+      <form id="search" action="https://www.bing.com/search" method="get" autocomplete="off">
+        <input type="text" id="q" name="nh84q" inputmode="search" enterkeyhint="search"
+               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+               aria-autocomplete="list" role="searchbox"
+               placeholder="搜索网页（/ 聚焦，Ctrl+Enter 新标签页）">
+        <button class="go" type="submit" aria-label="搜索">⌕</button>
+      </form>
+      <div class="suggest" id="suggest" hidden></div>
+    </div>
 
     <div class="hud">SYS.84 &nbsp;//&nbsp; NEON HORIZON &nbsp;·&nbsp; 新标签页已重构</div>
 
@@ -310,21 +403,182 @@
 
   /* ---------- search ---------- */
   const q = $("#q");
+  const suggestEl = $("#suggest");
+  const SUGGEST_MAX = 8;
+  let rows = [];
+  let activeIdx = -1;
+
   const isUrl = (s) => /^(https?:\/\/|www\.)|^[\w-]+(\.[\w-]+)+(\/|$)/.test(s);
+
+  /* 搜索历史：最近 200 条；频次表：{ 词: 次数 } */
+  const getHistory = () => store.get("history", []);
+  const getCounts = () => store.get("counts", {});
+
+  function remember(raw) {
+    const key = raw.trim();
+    if (!key) return;
+    const hist = getHistory().filter((h) => h.q !== key);
+    hist.unshift({ q: key, t: Date.now() });
+    store.set("history", hist.slice(0, 200));
+    const counts = getCounts();
+    counts[key] = (counts[key] || 0) + 1;
+    store.set("counts", counts);
+  }
+  function forget(key) {
+    store.set("history", getHistory().filter((h) => h.q !== key));
+  }
+  function frequent(limit) {
+    return Object.entries(getCounts())
+      .sort((a, b) => b[1] - a[1] || 0)
+      .slice(0, limit)
+      .map(([k, n]) => ({ q: k, n }));
+  }
+
+  const escapeHtml = (s) =>
+    s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  /* 命中片段高亮（大小写不敏感，只取第一处） */
+  function highlight(text, term) {
+    const t = term.trim();
+    if (!t) return escapeHtml(text);
+    const i = text.toLowerCase().indexOf(t.toLowerCase());
+    if (i < 0) return escapeHtml(text);
+    return escapeHtml(text.slice(0, i)) + "<b>" + escapeHtml(text.slice(i, i + t.length)) + "</b>" +
+           escapeHtml(text.slice(i + t.length));
+  }
+
+  const SEEDS = ["deepseek 使用技巧", "bilibili 番剧", "github pages 自定义域名", "edge 主题推荐"];
+
+  function buildRows(term) {
+    const t = term.trim().toLowerCase();
+    const out = [];
+    if (!t) {
+      getHistory().slice(0, 5).forEach((h) => out.push({ kind: "history", q: h.q }));
+      frequent(5).forEach((f) => {
+        if (!out.some((r) => r.q === f.q)) out.push({ kind: "frequent", q: f.q, n: f.n });
+      });
+      /* 全新用户：给几条推荐，面板不至于空着 */
+      if (!out.length) SEEDS.forEach((s) => out.push({ kind: "seed", q: s }));
+    } else {
+      getHistory().filter((h) => h.q.toLowerCase().includes(t)).slice(0, 6)
+        .forEach((h) => out.push({ kind: "history", q: h.q }));
+      frequent(30)
+        .filter((f) => f.q.toLowerCase().includes(t) && !out.some((r) => r.q === f.q))
+        .slice(0, 4)
+        .forEach((f) => out.push({ kind: "frequent", q: f.q, n: f.n }));
+      /* 还没攒下历史时，让输入也有反馈 */
+      if (!out.length) {
+        SEEDS.filter((s) => s.toLowerCase().includes(t)).slice(0, 4)
+          .forEach((s) => out.push({ kind: "seed", q: s }));
+      }
+    }
+    return out.slice(0, SUGGEST_MAX);
+  }
+
+  function renderSuggest() {
+    rows = buildRows(q.value);
+    activeIdx = -1;
+    if (!rows.length) { suggestEl.hidden = true; suggestEl.innerHTML = ""; return; }
+
+    let html = "";
+    let lastKind = null;
+    rows.forEach((r, i) => {
+      if (r.kind !== lastKind) {
+        const label = r.kind === "history" ? "搜索历史" : r.kind === "frequent" ? "常用" : "推荐";
+        html += '<div class="sec">' + label + "</div>";
+        lastKind = r.kind;
+      }
+      html +=
+        '<div class="row" data-i="' + i + '">' +
+        '<span class="ico">' + (r.kind === "history" ? "↺" : r.kind === "frequent" ? "★" : "⌕") + "</span>" +
+        '<span class="txt">' + highlight(r.q, q.value) + "</span>" +
+        (r.kind === "frequent" && r.n ? '<span class="n">×' + r.n + "</span>" : "") +
+        (r.kind === "history" ? '<span class="del" title="从历史中删除">✕</span>' : "") +
+        "</div>";
+    });
+    html +=
+      '<div class="foot"><span>' + rows.length + " 条建议</span>" +
+      '<button id="clrHist" type="button">清除搜索历史</button></div>';
+
+    suggestEl.innerHTML = html;
+    suggestEl.hidden = false;
+
+    suggestEl.querySelectorAll(".row").forEach((el) => {
+      el.addEventListener("mousedown", (e) => {
+        const del = e.target.closest(".del");
+        if (del) {
+          e.preventDefault();
+          forget(rows[+el.dataset.i].q);
+          renderSuggest();
+          q.focus();
+          return;
+        }
+        e.preventDefault();
+        q.value = rows[+el.dataset.i].q;
+        closeSuggest();
+        go(false);
+      });
+    });
+    const clr = suggestEl.querySelector("#clrHist");
+    if (clr) {
+      clr.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        store.set("history", []);
+        renderSuggest();
+        q.focus();
+        say("已清除搜索历史");
+      });
+    }
+  }
+
+  function closeSuggest() {
+    suggestEl.hidden = true;
+    activeIdx = -1;
+  }
+  function moveActive(delta) {
+    if (!rows.length) return;
+    activeIdx = (activeIdx + delta + rows.length) % rows.length;
+    const els = suggestEl.querySelectorAll(".row");
+    els.forEach((el, i) => el.classList.toggle("active", i === activeIdx));
+    if (els[activeIdx]) els[activeIdx].scrollIntoView({ block: "nearest" });
+  }
 
   function go(forceNewTab) {
     const raw = q.value.trim();
     if (!raw) return;
-    const target = isUrl(raw)
-      ? (raw.startsWith("http") ? raw : "https://" + raw)
-      : "https://www.bing.com/search?q=" + encodeURIComponent(raw);
+    remember(raw);
+    if (!isUrl(raw)) {
+      const target = "https://www.bing.com/search?q=" + encodeURIComponent(raw);
+      if (forceNewTab) window.open(target, "_blank");
+      else location.href = target;
+      return;
+    }
+    const target = raw.startsWith("http") ? raw : "https://" + raw;
     if (forceNewTab) window.open(target, "_blank");
     else location.href = target;
   }
-  $("#search").addEventListener("submit", (e) => { e.preventDefault(); go(false); });
+
+  $("#search").addEventListener("submit", (e) => { e.preventDefault(); closeSuggest(); go(false); });
+  q.addEventListener("input", renderSuggest);
+  q.addEventListener("focus", renderSuggest);
   q.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); go(true); }
-    if (e.key === "Escape") q.blur();
+    if (e.key === "ArrowDown") { e.preventDefault(); moveActive(1); return; }
+    if (e.key === "ArrowUp") { e.preventDefault(); moveActive(-1); return; }
+    if (e.key === "Escape") { if (!suggestEl.hidden) { e.preventDefault(); closeSuggest(); } else q.blur(); return; }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (activeIdx >= 0 && rows[activeIdx]) {
+        q.value = rows[activeIdx].q;
+        closeSuggest();
+        go(e.ctrlKey || e.metaKey);
+        return;
+      }
+      closeSuggest();
+      go(e.ctrlKey || e.metaKey);
+    }
+  });
+  document.addEventListener("mousedown", (e) => {
+    if (!suggestEl.hidden && !e.target.closest(".search-wrap")) closeSuggest();
   });
   window.addEventListener("keydown", (e) => {
     const typing = /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
