@@ -7,426 +7,424 @@
 <title>NEON HORIZON 84 — 84 号台</title>
 <style>
   /* ==========================================================
-     ORBITAL BÜRO 风格系统 — 苏黎世国际主义 × 太空时代
-     炭黑底 / 米白纸 / 琥珀单色 / 发丝线 / 等宽小字 / 切角面板
+     瑞士国际主义（网格 / 发丝线 / 无衬线） × 复古未来主义（仪表 / 磷光 / 网点）
+     炭黑 · 米白 · 琥珀单色
      ========================================================== */
   :root {
     --bg: #0B0B0D;
-    --bg-2: #0E0E10;
     --ink: #EDE7DA;
-    --dim: rgba(237, 231, 218, .52);
-    --dim-2: rgba(237, 231, 218, .74);
+    --dim: rgba(237, 231, 218, .50);
+    --dim-2: rgba(237, 231, 218, .72);
     --line: rgba(237, 231, 218, .16);
     --line-2: rgba(237, 231, 218, .30);
     --acc: #FFB300;
-    --acc-soft: rgba(255, 179, 0, .11);
+    --acc-dim: rgba(255, 179, 0, .16);
     --acc-line: rgba(255, 179, 0, .55);
-    --band: #FFB300;
-    --band-ink: #0B0B0D;
-    --panel: #0E0E10;
-    --gutter: clamp(10px, 1.4vw, 22px);
-    --pad: clamp(16px, 3vw, 46px);
-    --mh: 32px;
+    --glow: rgba(255, 179, 0, .22);
+    --pad: clamp(20px, 3.6vw, 56px);
+    --gutter: clamp(12px, 1.6vw, 24px);
     --sans: "Helvetica Neue", Helvetica, Arial, "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
-    --mono: ui-monospace, "Cascadia Mono", Consolas, "SF Mono", Menlo, "PingFang SC", monospace;
+    --mono: ui-monospace, "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
   }
   html[data-mode="day"] {
     --bg: #EDE7DA;
-    --bg-2: #E6DFD1;
     --ink: #0B0B0D;
-    --dim: rgba(11, 11, 13, .55);
-    --dim-2: rgba(11, 11, 13, .78);
+    --dim: rgba(11, 11, 13, .52);
+    --dim-2: rgba(11, 11, 13, .76);
     --line: rgba(11, 11, 13, .18);
     --line-2: rgba(11, 11, 13, .34);
     --acc: #B5401A;
-    --acc-soft: rgba(181, 64, 26, .10);
+    --acc-dim: rgba(181, 64, 26, .10);
     --acc-line: rgba(181, 64, 26, .55);
-    --band: #0B0B0D;
-    --band-ink: #EDE7DA;
-    --panel: #E6DFD1;
+    --glow: rgba(181, 64, 26, .14);
   }
 
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
   body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 15px;
-    line-height: 1.6;
-    overflow: hidden;
     height: 100dvh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "tnum" 1, "kern" 1;
     -webkit-tap-highlight-color: transparent;
   }
   ::selection { background: var(--acc); color: var(--bg); }
-  :focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
+  :focus-visible { outline: 1px solid var(--acc); outline-offset: 4px; }
   input, button { font: inherit; color: inherit; }
+  a { color: inherit; text-decoration: none; }
 
-  .wrap { width: 100%; max-width: 1480px; margin: 0 auto; padding-inline: var(--pad); }
   .mono {
-    font-family: var(--mono); font-size: 9.5px; line-height: 1.6;
-    letter-spacing: .18em; text-transform: uppercase; color: var(--dim);
+    font-family: var(--mono);
+    font-size: 9px;
+    line-height: 1.5;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--dim);
   }
-  .only-wide { display: inline; }
 
-  /* ---------- CRT / 暗角 ---------- */
+  /* ---------- 覆盖层：暗角 / 扫描线 / 网格 ---------- */
   .vignette {
     position: fixed; inset: 0; z-index: 190; pointer-events: none;
-    background: radial-gradient(120% 95% at 50% 34%, transparent 46%, rgba(0, 0, 0, .5) 100%);
+    background: radial-gradient(118% 92% at 46% 40%, transparent 44%, rgba(0, 0, 0, .55) 100%);
   }
   html[data-mode="day"] .vignette {
-    background: radial-gradient(120% 95% at 50% 34%, transparent 52%, rgba(60, 44, 30, .18) 100%);
+    background: radial-gradient(118% 92% at 46% 40%, transparent 52%, rgba(70, 50, 30, .16) 100%);
   }
   .crt {
     position: fixed; inset: 0; z-index: 200; pointer-events: none;
-    background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .28) 0 1px, transparent 1px 3px);
+    background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .26) 0 1px, transparent 1px 3px);
     opacity: .55; transition: opacity .35s ease;
   }
-  html[data-mode="day"] .crt { opacity: .22; background: repeating-linear-gradient(to bottom, rgba(11, 11, 13, .16) 0 1px, transparent 1px 3px); }
+  html[data-mode="day"] .crt {
+    opacity: .2;
+    background: repeating-linear-gradient(to bottom, rgba(11, 11, 13, .14) 0 1px, transparent 1px 3px);
+  }
   body.crt-off .crt { opacity: 0; }
 
-  /* ---------- 12 栏参考线 ---------- */
   .grid-overlay {
     position: fixed; inset: 0; z-index: 150; pointer-events: none;
     opacity: 0; transition: opacity .2s;
   }
   body.show-grid .grid-overlay { opacity: 1; }
-  .grid-overlay .wrap { height: 100%; }
-  .grid-overlay .cols { height: 100%; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gutter); }
-  .grid-overlay .cols i { background: var(--acc-soft); border-left: 1px solid var(--acc-line); }
-
-  /* ---------- 顶部通栏 ---------- */
-  .ticker { border-bottom: 1px solid var(--line); flex: none; background: var(--acc-soft); }
-  .ticker .wrap { display: flex; justify-content: space-between; gap: 16px; padding-block: 5px; }
-  .ticker .mono { font-size: 9px; letter-spacing: .14em; }
-
-  .site-header { border-bottom: 1px solid var(--line); flex: none; }
-  .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding-block: 11px; }
-  .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-  .mark { width: 26px; height: 26px; flex: none; color: var(--ink); }
-  .brand-name { font-size: 15px; font-weight: 700; letter-spacing: .06em; white-space: nowrap; }
-  .brand-sub { font-size: 9px; letter-spacing: .14em; color: var(--dim); white-space: nowrap; }
-  .header-meta { display: flex; align-items: center; gap: 14px; font-size: 9px; letter-spacing: .14em; }
-  .led {
-    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-    background: var(--acc); box-shadow: 0 0 8px var(--acc);
-    animation: blink 1.6s ease-in-out infinite; vertical-align: middle;
+  .grid-overlay .inner {
+    height: 100%; max-width: 1600px; margin: 0 auto; padding-inline: var(--pad);
+    display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gutter);
   }
-  .live { display: inline-flex; align-items: center; gap: 6px; color: var(--acc); }
+  .grid-overlay .inner i { background: var(--acc-dim); border-left: 1px solid var(--acc-line); }
+
+  /* ---------- 左侧竖脊 ---------- */
+  .spine {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 40px; z-index: 120;
+    display: flex; align-items: center; justify-content: center;
+    border-right: 1px solid var(--line);
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .spine span {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--mono); font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--dim); white-space: nowrap;
+  }
+  .spine span b { color: var(--acc); font-weight: 400; }
+
+  /* ---------- 页眉 ---------- */
+  .top {
+    flex: none; z-index: 10;
+    padding-left: 40px;
+  }
+  .top-inner {
+    max-width: 1600px; margin: 0 auto; padding: 13px var(--pad) 12px;
+    display: flex; align-items: center; gap: 14px;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .mark { width: 22px; height: 22px; flex: none; color: var(--ink); }
+  .wordmark { font-size: 14px; font-weight: 700; letter-spacing: .1em; white-space: nowrap; }
+  .top .rule { flex: 1; height: 1px; background: var(--line); }
+  .topmeta { display: flex; align-items: center; gap: 16px; white-space: nowrap; }
+  .led {
+    width: 5px; height: 5px; border-radius: 50%; background: var(--acc);
+    box-shadow: 0 0 8px var(--acc); animation: blink 2.4s ease-in-out infinite; display: inline-block;
+  }
 
   /* ---------- 主区 ---------- */
-  .main { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: center; padding-block: clamp(12px, 2vw, 26px); }
-  .hero-head {
-    display: flex; justify-content: space-between; gap: 16px; align-items: baseline;
-    padding-bottom: 9px; border-bottom: 1px solid var(--line-2);
+  .main {
+    flex: 1 1 auto; min-height: 0; z-index: 10; padding-left: 40px;
+    display: flex; align-items: center;
   }
-  .hero-head .mono { color: var(--dim-2); }
-  .hero-head .sig { color: var(--acc); }
-
-  .hero-main {
-    display: grid;
-    grid-template-columns: minmax(0, 2.4fr) minmax(250px, 1fr);
-    gap: clamp(18px, 3vw, 46px);
-    margin-top: clamp(14px, 2.4vw, 30px);
-    align-items: start;
+  .grid12 {
+    width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 var(--pad);
+    display: grid; grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--gutter);
+    align-items: end;
   }
-  .hero-copy { min-width: 0; }
 
-  /* 时钟 = 主视觉标题 */
+  .eyebrow {
+    grid-column: 1 / span 8;
+    grid-row: 1;
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow .bar { width: 22px; height: 1px; background: var(--acc); }
+
   .clock {
+    grid-column: 1 / span 8;
+    grid-row: 2;
     margin: 0;
     font-family: var(--sans);
     font-weight: 700;
-    font-size: clamp(58px, 12.4vw, 168px);
-    line-height: .86;
-    letter-spacing: -.045em;
+    font-size: clamp(80px, 16.2vw, 262px);
+    line-height: .82;
+    letter-spacing: -.055em;
     font-variant-numeric: tabular-nums;
-    text-transform: uppercase;
+    color: var(--ink);
+    text-shadow: 0 0 26px var(--glow);
     cursor: pointer;
     user-select: none;
-    text-shadow: 1.5px 0 var(--acc-soft), -1.5px 0 rgba(120, 210, 210, .10);
-    transition: opacity .2s ease;
-    display: block;
+    padding: .06em 0 .02em;
+    transition: opacity .2s;
   }
-  .clock:hover { opacity: .86; }
-  .clock .sep { padding-inline: .04em; }
+  .clock:hover { opacity: .88; }
+  .clock .colon {
+    color: var(--acc);
+    font-size: .46em;
+    letter-spacing: 0;
+    vertical-align: .10em;
+    padding: 0 .04em;
+  }
   .clock .sec {
-    font-size: .38em;
-    letter-spacing: -.02em;
-    margin-left: .14em;
+    font-size: .26em;
+    letter-spacing: -.01em;
+    margin-left: .12em;
     color: var(--dim-2);
-    vertical-align: .42em;
+    vertical-align: .72em;
     display: inline-block;
+    font-weight: 500;
   }
   .clock .sec[hidden] { display: none; }
-  .clock .dot {
-    display: inline-block;
-    width: .13em; height: .13em;
-    border-radius: 50%;
-    margin-left: .10em;
-    vertical-align: baseline;
-    background: var(--acc);
-    box-shadow: 0 0 26px rgba(255, 179, 0, .65);
-    animation: blink 2.6s ease-in-out infinite;
+
+  .dateline {
+    grid-column: 1 / span 8;
+    grid-row: 3;
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+    padding: 12px 0 0;
+    border-top: 1px solid var(--line);
   }
+  .dateline .d { font-family: var(--mono); font-size: 11px; letter-spacing: .18em; color: var(--dim-2); }
+  .dateline .sep { color: var(--line-2); }
+  .dateline .d em { font-style: normal; color: var(--acc); }
 
-  .date-line { margin: 14px 0 0; font-size: 10px; letter-spacing: .26em; color: var(--dim-2); }
-  .date-line b { color: var(--acc); font-weight: 500; }
-
-  /* ---------- 搜索 ---------- */
-  .search-wrap { position: relative; margin-top: clamp(14px, 2vw, 24px); max-width: 860px; }
-  form {
+  /* ---------- 仪表盘 ---------- */
+  .dial-wrap {
+    grid-column: 10 / span 3;
+    grid-row: 1 / span 5;
     position: relative;
+    align-self: center;
+    aspect-ratio: 1;
     width: 100%;
-    display: flex;
-    background: var(--panel);
-    border: 1px solid var(--line-2);
-    box-shadow: 0 14px 40px rgba(0, 0, 0, .35);
+    max-width: min(340px, 23vw);
+    justify-self: end;
   }
-  html[data-mode="day"] form { box-shadow: 0 12px 34px rgba(90, 70, 45, .16); }
-  form::before, form::after { content: ""; position: absolute; width: 9px; height: 9px; border: 1px solid var(--acc); }
-  form::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
-  form::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+  .halftone {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, var(--acc) .9px, transparent 1.1px);
+    background-size: 9px 9px;
+    opacity: .26;
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 8%, transparent 44%);
+    mask-image: radial-gradient(circle at 50% 50%, #000 8%, transparent 44%);
+    pointer-events: none;
+  }
+  .dial { position: relative; width: 100%; height: 100%; display: block; overflow: visible; }
+  .dial .bezel { fill: none; stroke: var(--line-2); stroke-width: 1; }
+  .dial .bezel-in { fill: none; stroke: var(--line); stroke-width: 1; }
+  .dial .arc-bg { fill: none; stroke: var(--line); stroke-width: 2; }
+  .dial .arc { fill: none; stroke: var(--acc); stroke-width: 2; transform: rotate(-90deg); transform-origin: 150px 150px; transition: stroke-dashoffset .5s ease; }
+  .dial .tick { stroke: var(--line-2); stroke-width: 1; }
+  .dial .tick.major { stroke: var(--dim-2); stroke-width: 1.4; }
+  .dial .tick.acc { stroke: var(--acc); stroke-width: 1.6; }
+  .dial .hand { transform-origin: 150px 150px; transition: transform .18s cubic-bezier(.3, 1.5, .5, 1); }
+  .dial .hand line { stroke: var(--acc); stroke-width: 1.6; stroke-linecap: round; }
+  .dial .hub { fill: var(--acc); }
+  .read {
+    position: absolute; left: 50%; top: 66%; transform: translate(-50%, 0);
+    text-align: center; pointer-events: none;
+  }
+  .read b {
+    display: block; font-family: var(--mono); font-size: 22px; font-weight: 500;
+    background: var(--bg); padding: 0 4px;
+    letter-spacing: .06em; color: var(--ink); font-variant-numeric: tabular-nums;
+  }
+  .read span { display: block; margin-top: 2px; font-family: var(--mono); font-size: 8px; letter-spacing: .24em; color: var(--dim); }
+
+  /* ---------- 搜索（下划线式） ---------- */
+  .search-wrap { grid-column: 1 / span 9; grid-row: 4; position: relative; margin-top: clamp(24px, 4vh, 44px); }
+  form {
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--line-2);
+    transition: border-color .22s ease, box-shadow .22s ease;
+  }
+  form:focus-within { border-bottom-color: var(--acc); box-shadow: 0 1px 0 0 var(--acc); }
+  .glyph { font-family: var(--mono); font-size: 15px; color: var(--acc); flex: none; }
   #q {
     flex: 1; min-width: 0;
-    padding: 15px 18px;
+    padding: 13px 0;
     border: 0; outline: 0; background: transparent;
     color: var(--ink);
-    font-size: 16px;
+    font-size: clamp(16px, 1.6vw, 20px);
     letter-spacing: .01em;
   }
-  #q::placeholder { color: var(--dim); letter-spacing: .06em; }
   #q:focus-visible { outline: none; }
-  form:focus-within { border-color: var(--acc); }
+  #q::placeholder { color: var(--dim); letter-spacing: .04em; }
   button.go {
-    width: 84px; flex: none; border: 0; cursor: pointer;
-    background: var(--acc); color: var(--bg);
-    font-family: var(--mono); font-size: 11px; font-weight: 600;
-    letter-spacing: .18em; text-transform: uppercase;
-    transition: background .2s ease, color .2s ease;
+    flex: none; border: 0; background: none; cursor: pointer;
+    padding: 10px 0;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--dim-2);
+    transition: color .2s ease;
   }
-  button.go:hover { background: var(--ink); color: var(--bg); }
-  html[data-mode="day"] button.go:hover { background: #0B0B0D; color: #EDE7DA; }
+  button.go:hover { color: var(--acc); }
 
-  /* ---------- 建议面板 ---------- */
-  .suggest {
-    position: absolute; top: calc(100% + 6px); left: 0; right: 0;
-    z-index: 30;
-    max-height: 48vh; overflow-y: auto;
-    background: var(--panel);
-    border: 1px solid var(--line-2);
-    box-shadow: 0 22px 60px rgba(0, 0, 0, .5);
+  /* ---------- 索引（编号条） ---------- */
+  .index {
+    grid-column: 1 / span 9;
+    grid-row: 5;
+    display: flex; flex-wrap: wrap; align-items: stretch;
+    margin-top: clamp(18px, 3vh, 30px);
+    border-top: 1px solid var(--line);
   }
-  html[data-mode="day"] .suggest { box-shadow: 0 20px 54px rgba(90, 70, 45, .22); }
-  .suggest::before, .suggest::after { content: ""; position: absolute; width: 9px; height: 9px; border: 1px solid var(--acc); }
-  .suggest::before { bottom: -1px; left: -1px; border-right: 0; border-top: 0; }
-  .suggest::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+  .index a {
+    display: flex; align-items: baseline; gap: 7px;
+    padding: 9px 14px 9px 0;
+    margin-right: 14px;
+    border-right: 1px solid var(--line);
+    color: var(--dim-2);
+    font-size: 13px;
+    transition: color .18s ease, border-color .18s ease;
+  }
+  .index a:last-child { border-right: 0; }
+  .index a b {
+    font-family: var(--mono); font-size: 8.5px; font-weight: 400;
+    letter-spacing: .14em; color: var(--dim);
+    transition: color .18s ease;
+  }
+  .index a:hover { color: var(--acc); border-color: var(--acc-line); }
+  .index a:hover b { color: var(--acc); }
+  .index a .del { display: none; font-size: 9px; color: var(--dim); margin-left: 2px; }
+  body.editing .index a .del { display: inline; }
+  body.editing .index a b { color: var(--acc); }
+  .index a.add { color: var(--dim); }
+  .index a.add b { color: var(--dim); }
+
+  /* ---------- 建议列表 ---------- */
+  .suggest {
+    position: absolute; left: 0; right: 0; bottom: calc(100% + 6px); top: auto;
+    z-index: 40;
+    background: var(--bg);
+    border-top: 1px solid var(--line-2);
+    box-shadow: 0 -22px 44px rgba(0, 0, 0, .45);
+    max-height: 40vh; overflow-y: auto;
+  }
+  html[data-mode="day"] .suggest { box-shadow: 0 -20px 40px rgba(90, 70, 45, .16); }
   .suggest[hidden] { display: none; }
   .suggest .sec {
-    padding: 8px 13px 4px;
-    font-family: var(--mono); font-size: 9px; font-weight: 400;
-    letter-spacing: .22em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0 5px;
+    font-family: var(--mono); font-size: 8.5px; letter-spacing: .24em; text-transform: uppercase;
     color: var(--dim);
     border-bottom: 1px solid var(--line);
   }
+  .suggest .sec::after { content: ""; flex: 1; height: 1px; background: var(--line); }
   .suggest .row {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 13px;
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 0;
     cursor: pointer;
     font-size: 14px;
-    color: var(--ink);
     border-bottom: 1px solid var(--line);
-    transition: background .18s ease, color .18s ease;
+    transition: color .16s ease, padding-left .16s ease, background .16s ease;
   }
   .suggest .row .ico {
-    width: 14px; flex: none; text-align: center;
-    font-family: var(--mono); font-size: 11px;
-    color: var(--dim);
+    flex: none; width: 12px; text-align: center;
+    font-family: var(--mono); font-size: 10px; color: var(--dim);
   }
   .suggest .row .txt { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .suggest .row .txt b { color: var(--acc); font-weight: 700; }
-  .suggest .row .n { flex: none; font-family: var(--mono); font-size: 9px; letter-spacing: .1em; color: var(--dim); }
-  .suggest .row .del { flex: none; opacity: 0; font-size: 10px; color: var(--dim); padding: 0 2px; transition: opacity .15s; }
+  .suggest .row .n { flex: none; font-family: var(--mono); font-size: 8.5px; letter-spacing: .12em; color: var(--dim); }
+  .suggest .row .del { flex: none; opacity: 0; font-size: 10px; color: var(--dim); transition: opacity .15s; }
   .suggest .row:hover .del, .suggest .row.active .del { opacity: .8; }
   .suggest .row .del:hover { color: var(--acc); }
   .suggest .row:hover, .suggest .row.active {
-    background: linear-gradient(90deg, var(--acc-soft), transparent 72%);
+    background: var(--acc-dim);
     box-shadow: inset 2px 0 0 var(--acc);
+    padding-left: 10px;
   }
   .suggest .foot {
-    display: flex; justify-content: space-between; align-items: center; gap: 10px;
-    padding: 7px 13px;
-    font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    font-family: var(--mono); font-size: 8.5px; letter-spacing: .2em; text-transform: uppercase;
     color: var(--dim);
-    background: var(--acc-soft);
   }
   .suggest .foot button {
-    background: none; border: 0; cursor: pointer; padding: 0;
-    font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+    border: 0; background: none; cursor: pointer; padding: 0;
+    font-family: var(--mono); font-size: 8.5px; letter-spacing: .2em; text-transform: uppercase;
     color: var(--dim); transition: color .18s;
   }
   .suggest .foot button:hover { color: var(--acc); }
 
-  /* ---------- 快捷入口 ---------- */
-  .tiles { display: flex; flex-wrap: wrap; gap: 8px; margin-top: clamp(14px, 2vw, 22px); max-width: 860px; }
-  .tiles a {
-    position: relative;
-    display: flex; align-items: center; gap: 7px;
-    padding: 7px 13px;
-    text-decoration: none;
-    color: var(--dim-2);
-    font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
-    background: transparent;
-    border: 1px solid var(--line);
-    transition: border-color .18s ease, color .18s ease, background .18s ease;
+  /* ---------- 底部标尺 ---------- */
+  .ruler { flex: none; z-index: 10; padding-left: 40px; }
+  .ruler-inner {
+    max-width: 1600px; margin: 0 auto; padding: 0 var(--pad) 10px;
   }
-  .tiles a::after { content: "↗"; font-size: 11px; line-height: 1; color: var(--dim); transition: color .18s, transform .18s; }
-  .tiles a:hover { border-color: var(--acc); color: var(--acc); background: var(--acc-soft); }
-  .tiles a:hover::after { color: var(--acc); transform: translate(2px, -2px); }
-  .tiles a .del { display: none; font-size: 9px; color: var(--dim); margin-left: 2px; }
-  body.editing .tiles a .del { display: inline; }
-  body.editing .tiles a { border-color: var(--acc-line); border-style: dashed; }
-  .tiles a.add { border-style: dashed; color: var(--dim); }
-  .tiles a.add::after { content: none; }
-
-  .note { margin: clamp(12px, 1.8vw, 20px) 0 0; font-size: 9px; letter-spacing: .16em; color: var(--dim); }
-
-  /* ---------- 底部读数条 ---------- */
-  .hero-meta {
-    list-style: none; margin: clamp(14px, 2vw, 22px) 0 0; padding: 0;
-    max-width: 860px;
-    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-top: 1px solid var(--line-2);
-    border-bottom: 1px solid var(--line);
+  .ticks {
+    height: 9px;
+    border-top: 1px solid var(--line);
+    background-image:
+      repeating-linear-gradient(to right, var(--line-2) 0 1px, transparent 1px 40px),
+      repeating-linear-gradient(to right, var(--line) 0 1px, transparent 1px 8px);
+    background-size: 100% 9px, 100% 5px;
+    background-repeat: repeat-x, repeat-x;
   }
-  .hero-meta li { padding: 9px 14px 9px 0; border-right: 1px solid var(--line); min-width: 0; }
-  .hero-meta li:last-child { border-right: 0; }
-  .hero-meta li:nth-child(2) { padding-left: 14px; }
-  .hero-meta li:nth-child(3) { padding-left: 14px; }
-  .hero-meta .k {
-    display: block; font-family: var(--mono); font-size: 9px;
-    letter-spacing: .14em; text-transform: uppercase; color: var(--dim);
+  .ruler-meta {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    padding-top: 7px;
+    border-top: 1px solid transparent;
   }
-  .hero-meta .v {
-    display: block; margin-top: 2px;
-    font-family: var(--mono); font-size: 13px; letter-spacing: .06em;
-    color: var(--ink); font-variant-numeric: tabular-nums;
-  }
-  .hero-meta .v.acc { color: var(--acc); }
-
-  /* ---------- 遥测面板 ---------- */
-  .console {
-    position: relative;
-    border: 1px solid var(--line-2);
-    background: linear-gradient(180deg, var(--acc-soft), transparent 42%), var(--bg-2);
-  }
-  .console::before, .console::after { content: ""; position: absolute; width: 9px; height: 9px; border: 1px solid var(--acc); }
-  .console::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
-  .console::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
-  .console-head {
-    display: flex; justify-content: space-between; align-items: center; gap: 8px;
-    padding: 7px 11px;
-    border-bottom: 1px solid var(--line);
-    font-family: var(--mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase;
-    color: var(--dim);
-  }
-  .console-body { padding: 10px 11px 11px; }
-  .orbit { width: 100%; height: auto; max-height: 172px; }
-  .ring { transform-box: view-box; transform-origin: 120px 120px; animation: spin 28s linear infinite; }
-  .readouts { margin-top: 9px; border-top: 1px solid var(--line); }
-  .readouts > div { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--line); }
-  .readouts .k { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
-  .readouts .v { font-family: var(--mono); font-size: 10px; letter-spacing: .08em; color: var(--ink); font-variant-numeric: tabular-nums; }
-  .readouts .v.acc { color: var(--acc); }
-  .console-cta {
-    display: flex; justify-content: space-between; align-items: center; gap: 10px;
-    width: 100%; border: 0; cursor: pointer;
-    padding: 10px 11px;
-    background: var(--acc); color: var(--bg);
-    font-family: var(--mono); font-size: 9px; font-weight: 600;
-    letter-spacing: .16em; text-transform: uppercase;
-    transition: background .2s, color .2s;
-  }
-  .console-cta:hover { background: var(--ink); color: var(--bg); }
-  html[data-mode="day"] .console-cta:hover { background: #0B0B0D; color: #EDE7DA; }
-  .console-cta.on { background: transparent; color: var(--acc); box-shadow: inset 0 0 0 1px var(--acc); }
-
-  /* ---------- 底部信号带 ---------- */
-  .marquee {
-    flex: none; height: var(--mh); overflow: hidden;
-    background: var(--band); color: var(--band-ink);
-    border-top: 1px solid var(--band);
-  }
-  .marquee-track { display: flex; width: max-content; animation: marquee 42s linear infinite; }
-  .marquee:hover .marquee-track { animation-play-state: paused; }
-  .marquee-track span {
-    font-family: var(--mono); font-size: 10px; letter-spacing: .24em; text-transform: uppercase;
-    padding: 8px 0; white-space: nowrap;
-  }
-
-  /* ---------- HUD ---------- */
-  .hud {
-    position: fixed; right: 14px; bottom: calc(var(--mh) + 12px); z-index: 300;
-    display: flex;
-    border: 1px solid var(--line-2);
-    background: color-mix(in srgb, var(--bg) 88%, transparent);
-    backdrop-filter: blur(6px);
-  }
+  .hud { display: flex; gap: 0; }
   .hud button {
-    border: 0; border-left: 1px solid var(--line);
-    background: none; color: var(--dim-2); cursor: pointer;
-    font-family: var(--mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase;
-    padding: 8px 11px;
-    transition: background .2s, color .2s;
+    border: 0; background: none; cursor: pointer;
+    padding: 2px 10px;
+    font-family: var(--mono); font-size: 8.5px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--dim);
+    border-left: 1px solid var(--line);
+    transition: color .18s ease;
   }
-  .hud button:first-child { border-left: 0; }
+  .hud button:first-child { border-left: 0; padding-left: 0; }
   .hud button:hover { color: var(--acc); }
-  .hud button[aria-pressed="true"] { background: var(--acc); color: var(--bg); }
+  .hud button[aria-pressed="true"] { color: var(--acc); }
 
   .toast {
-    position: fixed; left: 50%; bottom: calc(var(--mh) + 16px); transform: translateX(-50%);
-    font-family: var(--mono); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase;
+    position: fixed; left: 50%; bottom: 54px; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
     color: var(--bg); background: var(--acc);
     padding: 7px 14px;
-    opacity: 0; transition: opacity .2s ease; z-index: 320;
-    pointer-events: none;
+    opacity: 0; transition: opacity .2s ease; z-index: 320; pointer-events: none;
   }
   .toast.show { opacity: 1; }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .22; } }
-  @keyframes marquee { to { transform: translateX(-50%); } }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .18; } }
 
   /* ---------- 响应式 ---------- */
-  @media (max-width: 1080px) {
-    .hero-main { grid-template-columns: 1fr; }
-    .console { display: none; }
-    .search-wrap, .tiles { max-width: none; }
+  @media (max-width: 1180px) {
+    .dial-wrap { grid-column: 10 / span 3; max-width: 220px; }
+    .clock, .eyebrow, .dateline { grid-column: 1 / span 8; }
+    .search-wrap, .index { grid-column: 1 / span 9; }
   }
-  @media (max-width: 760px) {
-    .only-wide { display: none; }
-    .brand-sub { display: none; }
-    .clock { font-size: clamp(52px, 14vw, 96px); }
-    .ticker .wrap { gap: 10px; }
-    .hero-head .mono { font-size: 8.5px; letter-spacing: .12em; }
-    .date-line { margin-top: 10px; letter-spacing: .18em; }
+  @media (max-width: 960px) {
+    .dial-wrap { display: none; }
+    .clock, .eyebrow, .dateline, .search-wrap, .index { grid-column: 1 / span 12; grid-row: auto; }
+    .spine { display: none; }
+    .top, .main, .ruler { padding-left: 0; }
   }
-  @media (max-height: 780px) {
-    .clock { font-size: clamp(48px, 8.4vw, 104px); }
-    .date-line { margin-top: 10px; }
-    .search-wrap { margin-top: 12px; }
+  @media (max-width: 700px) {
+    .clock { font-size: clamp(62px, 17vw, 120px); }
+    .topmeta .hide-sm { display: none; }
+    .ruler .hint { display: none; }
+    .index a { margin-right: 8px; padding-right: 8px; }
   }
-  @media (max-height: 640px) {
-    .clock { font-size: clamp(40px, 6.4vw, 74px); }
-    .note, .hero-head { display: none; }
-    #q { padding: 12px 15px; }
+  @media (max-height: 720px) {
+    .clock { font-size: clamp(64px, 11vw, 150px); }
+    .search-wrap { margin-top: 14px; }
+    .index { margin-top: 12px; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
+    .dial .hand { transition: none !important; }
   }
 </style>
 </head>
@@ -434,128 +432,105 @@
 
 <div class="vignette" aria-hidden="true"></div>
 <div class="crt" aria-hidden="true"></div>
-
 <div class="grid-overlay" aria-hidden="true">
-  <div class="wrap"><div class="cols">
+  <div class="inner">
     <i></i><i></i><i></i><i></i><i></i><i></i>
     <i></i><i></i><i></i><i></i><i></i><i></i>
-  </div></div>
-</div>
-
-<!-- 通栏信号 -->
-<div class="ticker">
-  <div class="wrap mono">
-    <span>NEON HORIZON 84 — 84 号台</span>
-    <span class="only-wide">RASTER 12 — 8 MM BASELINE</span>
-    <span>T+ <span id="mission">00:00:00</span></span>
   </div>
 </div>
 
-<header class="site-header">
-  <div class="wrap header-inner">
-    <div class="brand">
-      <svg class="mark" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
-        <circle cx="20" cy="20" r="9"/>
-        <ellipse cx="20" cy="20" rx="18" ry="6.5" transform="rotate(-24 20 20)"/>
-        <circle cx="20" cy="20" r="2.6" fill="#FFB300" stroke="none"/>
-      </svg>
-      <span class="brand-name">NEON HORIZON 84</span>
-      <span class="brand-sub mono">84 号台 · EST. 1984</span>
-    </div>
-    <div class="header-meta mono">
-      <span class="only-wide">UTC+8 · 上海 31.2304° N</span>
-      <span class="live"><i class="led"></i>LIVE</span>
+<div class="spine" aria-hidden="true">
+  <span><b>NEON HORIZON 84</b> &nbsp;—&nbsp; 84 号台 &nbsp;—&nbsp; 1984 / 2026</span>
+</div>
+
+<header class="top">
+  <div class="top-inner">
+    <svg class="mark" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+      <circle cx="20" cy="20" r="9"/>
+      <ellipse cx="20" cy="20" rx="18" ry="6.5" transform="rotate(-24 20 20)"/>
+      <circle cx="20" cy="20" r="2.6" fill="#FFB300" stroke="none"/>
+    </svg>
+    <span class="wordmark">NEON HORIZON 84</span>
+    <span class="rule"></span>
+    <div class="topmeta mono">
+      <span class="hide-sm">上海 31.2304° N</span>
+      <span class="hide-sm">UTC+8</span>
+      <span><i class="led"></i></span>
     </div>
   </div>
 </header>
 
-<main class="wrap main">
-  <div class="hero-head mono">
-    <span>01 — 检索 / SUCHE</span>
-    <span class="only-wide">NORMALBETRIEB — 待机</span>
-    <span class="sig">SIGNAL <span id="sig">98.4</span> %</span>
-  </div>
+<main class="main">
+  <div class="grid12">
 
-  <div class="hero-main">
-    <div class="hero-copy">
-      <h1 class="clock" id="clock" title="点击切换秒显示">
-        <span id="hh">--</span><span class="sep">:</span><span id="mm">--</span><span class="sec" id="sec" hidden>00</span><span class="dot" aria-hidden="true"></span>
-      </h1>
+    <div class="eyebrow mono">
+      <span class="bar"></span>
+      <span>本地时间 / LOCAL</span>
 
-      <p class="date-line mono" id="date">— 加载中 —</p>
-
-      <div class="search-wrap">
-        <form id="search" action="https://www.bing.com/search" method="get" autocomplete="off">
-          <input type="text" id="q" name="nh84q" inputmode="search" enterkeyhint="search"
-                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                 aria-autocomplete="list" role="searchbox"
-                 placeholder="搜索网页 / SUCHE">
-          <button class="go" type="submit" aria-label="搜索">GO →</button>
-        </form>
-        <div class="suggest" id="suggest" hidden></div>
-      </div>
-
-      <nav class="tiles" id="tiles"></nav>
-
-      <ul class="hero-meta">
-        <li><span class="k">VERLAUF / 历史</span><span class="v acc" id="shist">0 条</span></li>
-        <li><span class="k">KACHELN / 快捷</span><span class="v" id="stile">5 个</span></li>
-        <li><span class="k">SPEICHER / 存储</span><span class="v">LOCAL ONLY</span></li>
-      </ul>
-
-      <p class="note">/ 聚焦搜索 · ↑↓ 选择 · ENTER 打开 · CTRL+ENTER 新标签 · G 网格 · C 扫描线 · L 昼夜</p>
     </div>
 
-    <aside class="console" aria-label="遥测面板">
-      <div class="console-head mono">
-        <span>TELEMETRIE</span>
-        <span class="live"><i class="led"></i>LIVE</span>
+    <h1 class="clock" id="clock" title="点击切换秒显示">
+      <span id="hh">--</span><span class="colon">:</span><span id="mm">--</span><span class="sec" id="sec" hidden>00</span>
+    </h1>
+
+    <div class="dateline">
+      <span class="d" id="date">— 加载中 —</span>
+      <span class="sep mono">/</span>
+      <span class="d"><em id="doy">000</em> 日</span>
+      <span class="sep mono">/</span>
+      <span class="d" id="greet">—</span>
+    </div>
+
+    <div class="dial-wrap">
+      <div class="halftone" aria-hidden="true"></div>
+      <svg class="dial" viewBox="0 0 300 300" role="img" aria-label="秒针表盘">
+        <circle class="bezel" cx="150" cy="150" r="147"/>
+        <circle class="bezel-in" cx="150" cy="150" r="139"/>
+        <g id="ticks"></g>
+        <circle class="arc-bg" cx="150" cy="150" r="128"/>
+        <circle class="arc" id="arc" cx="150" cy="150" r="128" stroke-linecap="round"/>
+        <g class="hand" id="hand">
+          <line x1="150" y1="126" x2="150" y2="44"/>
+        </g>
+        <circle class="hub" cx="150" cy="150" r="3.4"/>
+      </svg>
+      <div class="read">
+        <b id="dsec">00</b>
+        <span>SEC / 秒</span>
       </div>
+    </div>
 
-      <div class="console-body">
-        <svg class="orbit" viewBox="0 0 240 240" role="img" aria-label="轨道示意图">
-          <g fill="none" stroke="currentColor" stroke-opacity=".22" stroke-width="1">
-            <circle cx="120" cy="120" r="109"/>
-            <circle cx="120" cy="120" r="74" stroke-dasharray="2 6"/>
-            <circle cx="120" cy="120" r="36"/>
-            <line x1="11" y1="120" x2="229" y2="120"/>
-            <line x1="120" y1="11" x2="120" y2="229"/>
-          </g>
-          <g class="ring" fill="none" stroke="#FFB300" stroke-opacity=".8" stroke-width="1.2" stroke-dasharray="4 7">
-            <ellipse cx="120" cy="120" rx="103" ry="40" transform="rotate(-20 120 120)"/>
-          </g>
-          <circle cx="120" cy="120" r="3" fill="#FFB300"/>
-          <circle cx="205" cy="86" r="3.5" fill="#FFB300"/>
-        </svg>
+    <div class="search-wrap">
+      <form id="search" action="https://www.bing.com/search" method="get" autocomplete="off">
+        <span class="glyph" aria-hidden="true">⌕</span>
+        <input type="text" id="q" name="nh84q" inputmode="search" enterkeyhint="search"
+               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+               aria-autocomplete="list" role="searchbox" aria-label="搜索"
+               placeholder="搜索网页">
+        <button class="go" type="submit">搜索 →</button>
+      </form>
+      <div class="suggest" id="suggest" hidden></div>
+    </div>
 
-        <div class="readouts">
-          <div><span class="k">MODUS / 模式</span><span class="v acc" id="rmode">NORMAL</span></div>
-          <div><span class="k">VERLAUF / 历史</span><span class="v" id="rhist">0 条</span></div>
-          <div><span class="k">SIGNAL / 信号</span><span class="v" id="rsig">98.4 %</span></div>
-          <div><span class="k">LATENZ / 延迟</span><span class="v" id="rlat">0.42 S</span></div>
-          <div><span class="k">RASTER / 网格</span><span class="v">12 / 8 MM</span></div>
-        </div>
-      </div>
+    <nav class="index" id="tiles" aria-label="快捷入口"></nav>
 
-      <button class="console-cta" id="btnEdit" type="button">
-        <span id="editLabel">编辑快捷入口</span><span aria-hidden="true">↗</span>
-      </button>
-    </aside>
   </div>
 </main>
 
-<div class="marquee" aria-hidden="true">
-  <div class="marquee-track">
-    <span>NEON HORIZON 84 ✳ DESIGN FÜR MORGEN ✳ RASTER 12 ✳ SIGNAL STABIL ✳ 1984 — 2026 ✳ 检索就绪 ✳&nbsp;</span>
-    <span>NEON HORIZON 84 ✳ DESIGN FÜR MORGEN ✳ RASTER 12 ✳ SIGNAL STABIL ✳ 1984 — 2026 ✳ 检索就绪 ✳&nbsp;</span>
+<footer class="ruler">
+  <div class="ruler-inner">
+    <div class="ticks" aria-hidden="true"></div>
+    <div class="ruler-meta">
+      <span class="mono">RASTER 12 / 8MM <span class="hint">· / 聚焦 · ↑↓ 选 · ENTER 打开</span></span>
+      <div class="hud" role="group" aria-label="显示控制">
+        <button id="btnEdit" type="button" title="编辑快捷入口">EDIT</button>
+        <button id="btnGrid" type="button" aria-pressed="false" title="12 栏网格（G）">GRID</button>
+        <button id="btnCrt" type="button" aria-pressed="true" title="扫描线（C）">CRT</button>
+        <button id="btnMode" type="button" aria-pressed="false" title="昼 / 夜（L）">LUX</button>
+      </div>
+    </div>
   </div>
-</div>
-
-<div class="hud" role="group" aria-label="显示控制">
-  <button id="btnGrid" aria-pressed="false" title="12 栏网格（G）">GRID</button>
-  <button id="btnCrt" aria-pressed="true" title="扫描线（C）">CRT</button>
-  <button id="btnMode" aria-pressed="false" title="昼 / 夜（L）">LUX</button>
-</div>
+</footer>
 
 <div class="toast" id="toast"></div>
 
@@ -567,6 +542,7 @@
     get(k, d) { try { const v = localStorage.getItem("nh84:" + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem("nh84:" + k, JSON.stringify(v)); } catch (e) {} }
   };
+  const pad = (n) => String(n).padStart(2, "0");
 
   /* ---------- toast ---------- */
   const toastEl = $("#toast");
@@ -574,24 +550,51 @@
     toastEl.textContent = msg;
     toastEl.classList.add("show");
     clearTimeout(say._t);
-    say._t = setTimeout(() => toastEl.classList.remove("show"), 2000);
+    say._t = setTimeout(() => toastEl.classList.remove("show"), 1900);
   }
 
-  /* ---------- 昼 / 夜 ---------- */
+  /* ---------- 表盘刻度 ---------- */
+  (function buildTicks() {
+    const g = $("#ticks");
+    let out = "";
+    for (let i = 0; i < 60; i++) {
+      const a = (i / 60) * Math.PI * 2 - Math.PI / 2;
+      const major = i % 5 === 0;
+      const r1 = 139;
+      const r2 = major ? 127 : 133;
+      const x1 = 150 + r1 * Math.cos(a), y1 = 150 + r1 * Math.sin(a);
+      const x2 = 150 + r2 * Math.cos(a), y2 = 150 + r2 * Math.sin(a);
+      const cls = major ? "tick major" : "tick";
+      out += `<line class="${cls}" x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}"/>`;
+    }
+    /* 12 点 / 3 点 / 6 点 / 9 点用琥珀标出 */
+    [0, 15, 30, 45].forEach((i) => {
+      const a = (i / 60) * Math.PI * 2 - Math.PI / 2;
+      const x1 = 150 + 139 * Math.cos(a), y1 = 150 + 139 * Math.sin(a);
+      const x2 = 150 + 120 * Math.cos(a), y2 = 150 + 120 * Math.sin(a);
+      out += `<line class="tick acc" x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}"/>`;
+    });
+    g.innerHTML = out;
+    const arc = $("#arc");
+    const r = 128;
+    const len = 2 * Math.PI * r;
+    arc.style.strokeDasharray = len.toFixed(2);
+    arc.style.strokeDashoffset = len.toFixed(2);
+  })();
+
+  /* ---------- 昼夜 ---------- */
   const root = document.documentElement;
   function applyMode(m) {
     root.dataset.mode = m;
-    $("#rmode").textContent = m === "day" ? "TAG / 昼" : "NACHT / 夜";
     $("#btnMode").setAttribute("aria-pressed", String(m === "day"));
   }
   const toggleMode = () => {
     const next = root.dataset.mode === "day" ? "night" : "day";
     store.set("mode", next);
     applyMode(next);
-    say(next === "day" ? "昼间模式 / TAG" : "夜间模式 / NACHT");
+    say(next === "day" ? "昼间 / TAG" : "夜间 / NACHT");
   };
   applyMode(store.get("mode", "night"));
-  $("#btnMode").addEventListener("click", toggleMode);
 
   /* ---------- 网格 / 扫描线 ---------- */
   const gridBtn = $("#btnGrid"), crtBtn = $("#btnCrt");
@@ -602,53 +605,66 @@
   function toggleCrt() {
     const off = document.body.classList.toggle("crt-off");
     crtBtn.setAttribute("aria-pressed", String(!off));
+    store.set("crt", !off);
   }
   if (store.get("crt", true) === false) toggleCrt();
   gridBtn.addEventListener("click", toggleGrid);
-  crtBtn.addEventListener("click", () => { toggleCrt(); store.set("crt", !document.body.classList.contains("crt-off")); });
+  crtBtn.addEventListener("click", toggleCrt);
+  $("#btnMode").addEventListener("click", toggleMode);
 
-  /* ---------- 时钟 ---------- */
+  /* ---------- 时钟 + 表盘 ---------- */
   const hhEl = $("#hh"), mmEl = $("#mm"), secEl = $("#sec"), dateEl = $("#date");
+  const doyEl = $("#doy"), greetEl = $("#greet"), dsecEl = $("#dsec");
+  const handEl = $("#hand"), arcEl = $("#arc");
   const week = ["日", "一", "二", "三", "四", "五", "六"];
   let showSec = store.get("showSec", false);
-  const pad = (n) => String(n).padStart(2, "0");
+  const ARC_LEN = 2 * Math.PI * 128;
 
-  function renderClock() {
+  function greet(h) {
+    if (h < 5) return "深夜";
+    if (h < 9) return "清晨";
+    if (h < 12) return "上午";
+    if (h < 14) return "正午";
+    if (h < 18) return "下午";
+    if (h < 23) return "夜间";
+    return "深夜";
+  }
+
+  function tickClock() {
     const now = new Date();
+    const s = now.getSeconds();
     hhEl.textContent = pad(now.getHours());
     mmEl.textContent = pad(now.getMinutes());
     secEl.hidden = !showSec;
-    if (showSec) secEl.textContent = pad(now.getSeconds());
-    dateEl.innerHTML =
-      now.getFullYear() + "." + pad(now.getMonth() + 1) + "." + pad(now.getDate()) +
-      " &nbsp;·&nbsp; 周" + week[now.getDay()] +
-      " &nbsp;·&nbsp; <b>NO. " + pad(Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5)) + "</b>";
+    if (showSec) secEl.textContent = pad(s);
+    dsecEl.textContent = pad(s);
+
+    /* 秒针：每秒跳一下，带一点回弹 */
+    handEl.style.transform = "rotate(" + (s * 6) + "deg)";
+    /* 分针进度弧 */
+    const p = (now.getMinutes() * 60 + s) / 3600;
+    arcEl.style.strokeDashoffset = (ARC_LEN * (1 - p)).toFixed(2);
   }
-  renderClock();
-  setInterval(renderClock, 1000);
+
+  function tickDate() {
+    const now = new Date();
+    dateEl.textContent = now.getFullYear() + "." + pad(now.getMonth() + 1) + "." + pad(now.getDate()) +
+                         " · 周" + week[now.getDay()];
+    doyEl.textContent = String(Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5)).padStart(3, "0");
+    greetEl.textContent = greet(now.getHours());
+  }
+
+  tickClock(); tickDate();
+  setInterval(tickClock, 1000);
+  setInterval(tickDate, 30000);
+
+
   $("#clock").addEventListener("click", () => {
     showSec = !showSec;
     store.set("showSec", showSec);
-    renderClock();
-    say(showSec ? "已显示秒" : "已隐藏秒");
+    tickClock();
+    say(showSec ? "显示秒" : "隐藏秒");
   });
-
-  /* ---------- T+ 任务计时 ---------- */
-  const missionEl = $("#mission");
-  const t0 = Date.now();
-  setInterval(() => {
-    const s = Math.floor((Date.now() - t0) / 1000);
-    missionEl.textContent = pad(Math.floor(s / 3600)) + ":" + pad(Math.floor((s % 3600) / 60)) + ":" + pad(s % 60);
-  }, 1000);
-
-  /* ---------- 信号抖动 ---------- */
-  const sigEl = $("#sig"), rsigEl = $("#rsig"), rlatEl = $("#rlat");
-  setInterval(() => {
-    const v = (97.8 + Math.random() * 1.4).toFixed(1);
-    sigEl.textContent = v;
-    rsigEl.textContent = v + " %";
-    rlatEl.textContent = (0.38 + Math.random() * 0.09).toFixed(2) + " S";
-  }, 3200);
 
   /* ---------- 搜索 ---------- */
   const q = $("#q");
@@ -658,21 +674,8 @@
   let activeIdx = -1;
 
   const isUrl = (s) => /^(https?:\/\/|www\.)|^[\w-]+(\.[\w-]+)+(\/|$)/.test(s);
-
   const getHistory = () => store.get("history", []);
   const getCounts = () => store.get("counts", {});
-
-  /* 左下读数条 + 右侧遥测同步刷新 */
-  function refreshMeta() {
-    const n = getHistory().length;
-    const shist = $("#shist"), rhist = $("#rhist");
-    if (shist) shist.textContent = n + " 条";
-    if (rhist) rhist.textContent = n + " 条";
-  }
-  function refreshTileCount(list) {
-    const el = $("#stile");
-    if (el) el.textContent = (list ? list.length : store.get("tiles", []).length) + " 个";
-  }
 
   function remember(raw) {
     const key = raw.trim();
@@ -683,11 +686,9 @@
     const counts = getCounts();
     counts[key] = (counts[key] || 0) + 1;
     store.set("counts", counts);
-    refreshMeta();
   }
   function forget(key) {
     store.set("history", getHistory().filter((h) => h.q !== key));
-    refreshMeta();
   }
   function frequent(limit) {
     return Object.entries(getCounts())
@@ -743,29 +744,28 @@
     let lastKind = null;
     rows.forEach((r, i) => {
       if (r.kind !== lastKind) {
-        const label = r.kind === "history" ? "搜索历史 / VERLAUF" : r.kind === "frequent" ? "常用 / OFT" : "推荐 / VORSCHLAG";
+        const label = r.kind === "history" ? "历史 / HISTORY" : r.kind === "frequent" ? "常用 / FREQUENT" : "推荐 / SUGGEST";
         html += '<div class="sec">' + label + "</div>";
         lastKind = r.kind;
       }
       html +=
         '<div class="row" data-i="' + i + '">' +
-        '<span class="ico">' + (r.kind === "history" ? "↺" : r.kind === "frequent" ? "★" : "⌕") + "</span>" +
+        '<span class="ico">' + (r.kind === "history" ? "↺" : r.kind === "frequent" ? "★" : "·") + "</span>" +
         '<span class="txt">' + highlight(r.q, q.value) + "</span>" +
         (r.kind === "frequent" && r.n ? '<span class="n">×' + r.n + "</span>" : "") +
         (r.kind === "history" ? '<span class="del" title="从历史中删除">✕</span>' : "") +
         "</div>";
     });
     html +=
-      '<div class="foot"><span>' + rows.length + " 条建议</span>" +
-      '<button id="clrHist" type="button">清除搜索历史</button></div>';
+      '<div class="foot"><span>' + rows.length + " 条</span>" +
+      '<button id="clrHist" type="button">清除历史</button></div>';
 
     suggestEl.innerHTML = html;
     suggestEl.hidden = false;
 
     suggestEl.querySelectorAll(".row").forEach((el) => {
       el.addEventListener("mousedown", (e) => {
-        const del = e.target.closest(".del");
-        if (del) {
+        if (e.target.closest(".del")) {
           e.preventDefault();
           forget(rows[+el.dataset.i].q);
           renderSuggest();
@@ -783,18 +783,15 @@
       clr.addEventListener("mousedown", (e) => {
         e.preventDefault();
         store.set("history", []);
-        refreshMeta();
         renderSuggest();
         q.focus();
-        say("已清除搜索历史");
+        say("已清除历史");
       });
     }
   }
 
-  function closeSuggest() {
-    suggestEl.hidden = true;
-    activeIdx = -1;
-  }
+  function closeSuggest() { suggestEl.hidden = true; activeIdx = -1; }
+
   function moveActive(delta) {
     if (!rows.length) return;
     activeIdx = (activeIdx + delta + rows.length) % rows.length;
@@ -803,33 +800,25 @@
     if (els[activeIdx]) els[activeIdx].scrollIntoView({ block: "nearest" });
   }
 
-  function go(forceNewTab) {
+  function go(newTab) {
     const raw = q.value.trim();
     if (!raw) return;
     remember(raw);
-    if (!isUrl(raw)) {
-      const target = "https://www.bing.com/search?q=" + encodeURIComponent(raw);
-      if (forceNewTab) window.open(target, "_blank");
-      else location.href = target;
-      return;
-    }
-    const target = raw.startsWith("http") ? raw : "https://" + raw;
-    if (forceNewTab) window.open(target, "_blank");
+    const target = isUrl(raw)
+      ? (raw.startsWith("http") ? raw : "https://" + raw)
+      : "https://www.bing.com/search?q=" + encodeURIComponent(raw);
+    if (newTab) window.open(target, "_blank");
     else location.href = target;
   }
 
   $("#search").addEventListener("submit", (e) => { e.preventDefault(); closeSuggest(); go(false); });
   q.addEventListener("input", renderSuggest);
   q.addEventListener("click", renderSuggest);
-  /* 首屏自动聚焦但先不弹面板，免得盖住快捷入口 */
   let bootFocus = true;
-  q.addEventListener("focus", () => {
-    if (bootFocus) { bootFocus = false; return; }
-    renderSuggest();
-  });
+  q.addEventListener("focus", () => { if (bootFocus) { bootFocus = false; return; } renderSuggest(); });
   q.addEventListener("keydown", (e) => {
     if (e.key === "ArrowDown") { e.preventDefault(); if (suggestEl.hidden) renderSuggest(); moveActive(1); return; }
-    if (e.key === "ArrowUp") { e.preventDefault(); moveActive(-1); return; }
+    if (e.key === "ArrowUp") { e.preventDefault(); if (suggestEl.hidden) renderSuggest(); moveActive(-1); return; }
     if (e.key === "Escape") { if (!suggestEl.hidden) { e.preventDefault(); closeSuggest(); } else q.blur(); return; }
     if (e.key === "Enter") {
       e.preventDefault();
@@ -842,7 +831,7 @@
     if (!suggestEl.hidden && !e.target.closest(".search-wrap")) closeSuggest();
   });
 
-  /* ---------- 全局快捷键 ---------- */
+  /* ---------- 快捷键 ---------- */
   window.addEventListener("keydown", (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
@@ -850,7 +839,7 @@
     if (typing) return;
     const k = e.key.toLowerCase();
     if (k === "g") toggleGrid();
-    else if (k === "c") { toggleCrt(); store.set("crt", !document.body.classList.contains("crt-off")); }
+    else if (k === "c") toggleCrt();
     else if (k === "l") toggleMode();
   });
 
@@ -872,9 +861,10 @@
       a.href = t.url;
       a.target = "_blank";
       a.rel = "noreferrer";
+      const no = document.createElement("b");
+      no.textContent = pad(i + 1);
       const label = document.createElement("span");
       label.textContent = t.name;
-      a.appendChild(label);
       const del = document.createElement("span");
       del.className = "del";
       del.textContent = "✕";
@@ -885,13 +875,17 @@
         renderTiles();
         say("已删除「" + t.name + "」");
       });
-      a.appendChild(del);
+      a.append(no, label, del);
       tilesEl.appendChild(a);
     });
     const add = document.createElement("a");
     add.className = "add";
     add.href = "#";
-    add.textContent = "＋ 添加";
+    const noAdd = document.createElement("b");
+    noAdd.textContent = "＋";
+    const txt = document.createElement("span");
+    txt.textContent = "添加";
+    add.append(noAdd, txt);
     add.addEventListener("click", (e) => {
       e.preventDefault();
       if (!document.body.classList.contains("editing")) { toggleEdit(); return; }
@@ -904,20 +898,16 @@
       say("已添加「" + name + "」");
     });
     tilesEl.appendChild(add);
-    refreshTileCount(list);
   }
 
   function toggleEdit() {
     document.body.classList.toggle("editing");
     const on = document.body.classList.contains("editing");
-    const btn = $("#btnEdit");
-    btn.classList.toggle("on", on);
-    $("#editLabel").textContent = on ? "完成编辑" : "编辑快捷入口";
-    say(on ? "编辑模式：点 ✕ 删除，点「＋ 添加」新增" : "已退出编辑模式");
+    $("#btnEdit").setAttribute("aria-pressed", String(on));
+    say(on ? "编辑：✕ 删除 / ＋ 添加" : "退出编辑");
   }
   $("#btnEdit").addEventListener("click", toggleEdit);
   renderTiles();
-  refreshMeta();
 
   q.focus({ preventScroll: true });
 })();
